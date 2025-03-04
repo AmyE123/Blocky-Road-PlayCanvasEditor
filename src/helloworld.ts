@@ -3,7 +3,7 @@ class HelloWorld extends pc.ScriptType {
     entityLink : pc.Entity | null;
 
     initialize() {
-        console.log("Hello World!!");
+        console.log("Hello World!! Testy test");
     }
 };
 
