@@ -11,10 +11,17 @@ class Player extends pc.ScriptType {
         if (this.isTop) {
             this.isActive = true;
         }
+
+        this.findLevelManager();
     }
 
     update() {
         if (this.hasCompletedLevel && !this.completionFlag) {
+            if (!this.levelManager) { 
+                console.error("[PLAYER] LevelManager not found.");
+                this.findLevelManager();
+                return;
+            }
             var levelManagerScript = this.levelManager.script?.get('levelManager') as LevelManager | undefined;
 
             if (levelManagerScript) {
@@ -40,6 +47,19 @@ class Player extends pc.ScriptType {
 
     destroy() {
         this.app.mouse.off(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
+    }
+
+    findLevelManager() {
+        if (!this.levelManager) {
+            var levelManagerEntity = this.app.root.findByTag('levelManager')[0] as pc.Entity | undefined;
+
+            if (levelManagerEntity) {
+                this.levelManager = levelManagerEntity;
+                console.log("[PLAYER] Found LevelManager:", this.levelManager.name);
+            } else {
+                console.error("[PLAYER] LevelManager not found!");
+            }
+        }
     }
 };
 
