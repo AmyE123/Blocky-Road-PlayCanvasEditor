@@ -3,9 +3,14 @@ class Player extends pc.ScriptType {
     hasCompletedLevel: boolean;
     completionFlag: boolean = false;
     levelManager: pc.Entity;
+    isActive: boolean;
 
     initialize() {
         this.app.mouse.on(pc.EVENT_MOUSEDOWN, this.onMouseDown, this);
+
+        if (this.isTop) {
+            this.isActive = true;
+        }
     }
 
     update() {
@@ -20,7 +25,17 @@ class Player extends pc.ScriptType {
     }
 
     onMouseDown(event: pc.MouseEvent) {
-        this.entity.translate(0, 0, -1);  // TODO: Make this a constant somewhere. No magic numbers!    
+        if (event.button == pc.MOUSEBUTTON_LEFT) {
+            if (this.isActive) {
+                if (this.isTop) {
+                    this.entity.translate(0, 0, -1);  // TODO: Make this a constant somewhere. No magic numbers! 
+                }
+                else {
+                    this.entity.translate(0, 0, 1);  // TODO: Make this a constant somewhere. No magic numbers! 
+                }
+            }
+               
+        }       
     }
 
     destroy() {
