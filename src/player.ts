@@ -54,16 +54,31 @@ class Player extends pc.ScriptType {
 
     onMouseDown(event: pc.MouseEvent) {
         if (event.button == pc.MOUSEBUTTON_LEFT) {
-            if (this.isActive) {
-                if (this.isTop) {
-                    this.entity.translate(0, 0, -1);  // TODO: Make this a constant somewhere. No magic numbers! 
-                }
-                else {
-                    this.entity.translate(0, 0, 1);  // TODO: Make this a constant somewhere. No magic numbers! 
-                }
-            }
-               
+            this.movePlayer();
         }       
+    }
+
+    private movePlayer() {
+        if (!this.isActive) return;
+
+        let moveDirection = this.isTop ? new pc.Vec3(0, 0, -1) : new pc.Vec3(0, 0, 1);
+        let newPosition = this.entity.getPosition().clone().add(moveDirection);
+
+        if (!this.app.systems?.rigidbody) {
+            console.error("[PLAYER] Rigidbody not found!");
+            return;
+        }
+
+        let result = this.app.systems.rigidbody.raycastFirst(this.entity.getPosition(), newPosition);
+
+        // Check if ray result isn't the finish line, we want to go through that.
+        if (result && !result.entity.tags.has("finishLine") && !result.entity.tags.has("button")) {
+            return;
+        }
+
+        if (this.entity.rigidbody) {
+            this.entity.rigidbody.teleport(newPosition);
+        }
     }
 
     destroy() {

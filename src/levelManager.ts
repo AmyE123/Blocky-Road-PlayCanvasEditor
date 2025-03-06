@@ -43,6 +43,10 @@ class LevelManager extends pc.ScriptType {
                 }
             }
         }
+
+        if (event.key === pc.KEY_R) {
+            this.loadLevel(this.currentLevelIndex);
+        }
     }
 
     findPlayers() {
