@@ -72,7 +72,7 @@ class Player extends pc.ScriptType {
         let result = this.app.systems.rigidbody.raycastFirst(this.entity.getPosition(), newPosition);
 
         // Check if ray result isn't the finish line, we want to go through that.
-        if (result && !result.entity.tags.has("finishLine")) {
+        if (result && !result.entity.tags.has("finishLine") && !result.entity.tags.has("button")) {
             return;
         }
 
