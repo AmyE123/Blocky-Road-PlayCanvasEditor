@@ -54,15 +54,38 @@ class Player extends pc.ScriptType {
 
     onMouseDown(event: pc.MouseEvent) {
         if (event.button == pc.MOUSEBUTTON_LEFT) {
-            if (this.isActive) {
-                if (this.isTop) {
-                    this.entity.translate(0, 0, -1);  // TODO: Make this a constant somewhere. No magic numbers! 
-                }
-                else {
-                    this.entity.translate(0, 0, 1);  // TODO: Make this a constant somewhere. No magic numbers! 
-                }
-            }
-               
+            this.movePlayer();
+        }       
+    }
+
+    private checkValidMovement(): boolean {
+        if (!this.isActive) {
+            return false;
+        }
+
+        let moveDirection = this.isTop ? new pc.Vec3(0, 0, -1) : new pc.Vec3(0, 0, 1);
+        let newPosition = this.entity.getPosition().clone().add(moveDirection);
+
+        if (!this.app.systems || !this.app.systems.rigidbody) {
+            console.error("[PLAYER] Rigidbody not found!");
+            return false;
+        }
+
+        let result = this.app.systems.rigidbody.raycastFirst(this.entity.getPosition(), newPosition);
+
+        return result === null;       
+    }
+
+    private movePlayer() {
+        if (!this.checkValidMovement()) {
+            return; // Collision detected, do not move
+        }
+
+        let moveDirection = this.isTop ? new pc.Vec3(0, 0, -1) : new pc.Vec3(0, 0, 1);
+        let newPosition = this.entity.getPosition().clone().add(moveDirection);
+
+        if (this.entity.rigidbody) {
+            this.entity.rigidbody.teleport(newPosition);
         }       
     }
 
