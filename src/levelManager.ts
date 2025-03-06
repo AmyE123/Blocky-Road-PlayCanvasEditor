@@ -7,6 +7,7 @@ class LevelManager extends pc.ScriptType {
     levels: pc.Asset[] = [];
     currentLevelIndex: number = 0;
     currentLevel: pc.Entity | null = null;
+    gameCompleteUI: pc.Entity;
 
     initialize() {     
         this.app.keyboard.on(pc.EVENT_KEYDOWN, this.onKeyDown, this);
@@ -79,7 +80,7 @@ class LevelManager extends pc.ScriptType {
 
     loadLevel(index: number) {
         if (index >= this.levels.length) {
-            console.log("[LEVEL] All levels complete, congrats!!") // TODO: Add completion screen?
+            this.gameCompleteUI.enabled = true;
             return;
         }
 
@@ -110,12 +111,13 @@ class LevelManager extends pc.ScriptType {
             this.loadLevel(this.currentLevelIndex);
         }
         else {
-            console.log("[LEVEL] All levels complete, congrats!!") // TODO: Add completion screen?
+            this.gameCompleteUI.enabled = true;
         }
     }
 };
 
 pc.registerScript(LevelManager, 'levelManager');
 LevelManager.attributes.add('sidesCompleted', { type: 'number' })
-LevelManager.attributes.add('levelContainer', { type: 'entity' });
+LevelManager.attributes.add('levelContainer', { type: 'entity' })
+LevelManager.attributes.add('gameCompleteUI', { type: 'entity' });
 LevelManager.attributes.add('levels', { type: 'asset', array: true, assetType: 'template' });

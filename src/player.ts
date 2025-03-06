@@ -19,6 +19,10 @@ class Player extends pc.ScriptType {
         if (!this.ftueFlag) {
             this.findFTUEManager();
         }    
+
+        if (this.entity.collision) {
+            this.entity.collision.on('collisionstart', this.onCollisionStart, this);
+        }
     }
 
     update() {
@@ -58,6 +62,13 @@ class Player extends pc.ScriptType {
         }       
     }
 
+    private onCollisionStart(result: pc.ContactResult) {
+        if (result.other.tags.has("enemy")) {
+            this.respawn();
+        }
+    }
+
+
     private movePlayer() {
         if (!this.isActive) return;
 
@@ -72,12 +83,19 @@ class Player extends pc.ScriptType {
         let result = this.app.systems.rigidbody.raycastFirst(this.entity.getPosition(), newPosition);
 
         // Check if ray result isn't the finish line, we want to go through that.
-        if (result && !result.entity.tags.has("finishLine") && !result.entity.tags.has("button")) {
+        if (result && !result.entity.tags.has("finishLine") && !result.entity.tags.has("button") && !result.entity.tags.has("enemy")) {
             return;
         }
 
         if (this.entity.rigidbody) {
             this.entity.rigidbody.teleport(newPosition);
+        }
+    }
+
+    private respawn() {
+        var levelManagerScript = this.levelManager.script?.get('levelManager') as LevelManager | undefined;
+        if (levelManagerScript) {
+            levelManagerScript.loadLevel(levelManagerScript.currentLevelIndex);
         }
     }
 
