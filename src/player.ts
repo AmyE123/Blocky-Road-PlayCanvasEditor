@@ -34,7 +34,7 @@ class Player extends pc.ScriptType {
             }
 
             // TODO: Cleanup repetitive code!
-            // There HAS to be a better way to do this ? repetitive code between level manager and ftue manager
+            // Repetitive code between level manager and ftue manager
             if (!this.ftueManager && !this.ftueFlag) {
                 console.error("[PLAYER] FTUEManager not found.");
                 this.findFTUEManager();
@@ -82,7 +82,7 @@ class Player extends pc.ScriptType {
 
         let result = this.app.systems.rigidbody.raycastFirst(this.entity.getPosition(), newPosition);
 
-        // Check if ray result isn't the finish line, we want to go through that.
+        // Check if ray result isn't the finish line, button or enemy, we want to go through that.
         if (result && !result.entity.tags.has("finishLine") && !result.entity.tags.has("button") && !result.entity.tags.has("enemy")) {
             return;
         }
@@ -117,7 +117,7 @@ class Player extends pc.ScriptType {
     }
 
     // TODO: Cleanup repetitive code!
-    // There HAS to be a better way to do this ? repetitive code between level manager and ftue manager
+    // Repetitive code between level manager and ftue manager
     findFTUEManager() {
         if (!this.ftueManager && !this.ftueFlag) {
             var ftueManagerEntity = this.app.root.findByTag('ftueManager')[0] as pc.Entity | undefined;
