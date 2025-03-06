@@ -71,8 +71,9 @@ class Player extends pc.ScriptType {
 
         let result = this.app.systems.rigidbody.raycastFirst(this.entity.getPosition(), newPosition);
 
-        if (result) {
-            return; // Collision is detected, return as we don't want the player to move.
+        // Check if ray result isn't the finish line, we want to go through that.
+        if (result && !result.entity.tags.has("finishLine")) {
+            return;
         }
 
         if (this.entity.rigidbody) {
