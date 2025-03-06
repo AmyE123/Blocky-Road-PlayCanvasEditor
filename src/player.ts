@@ -58,35 +58,26 @@ class Player extends pc.ScriptType {
         }       
     }
 
-    private checkValidMovement(): boolean {
-        if (!this.isActive) {
-            return false;
-        }
+    private movePlayer() {
+        if (!this.isActive) return;
 
         let moveDirection = this.isTop ? new pc.Vec3(0, 0, -1) : new pc.Vec3(0, 0, 1);
         let newPosition = this.entity.getPosition().clone().add(moveDirection);
 
-        if (!this.app.systems || !this.app.systems.rigidbody) {
+        if (!this.app.systems?.rigidbody) {
             console.error("[PLAYER] Rigidbody not found!");
-            return false;
+            return;
         }
 
         let result = this.app.systems.rigidbody.raycastFirst(this.entity.getPosition(), newPosition);
 
-        return result === null;       
-    }
-
-    private movePlayer() {
-        if (!this.checkValidMovement()) {
-            return; // Collision detected, do not move
+        if (result) {
+            return; // Collision is detected, return as we don't want the player to move.
         }
-
-        let moveDirection = this.isTop ? new pc.Vec3(0, 0, -1) : new pc.Vec3(0, 0, 1);
-        let newPosition = this.entity.getPosition().clone().add(moveDirection);
 
         if (this.entity.rigidbody) {
             this.entity.rigidbody.teleport(newPosition);
-        }       
+        }
     }
 
     destroy() {
